@@ -6,7 +6,11 @@ from paralelizacao import search_path
 from concurrent.futures import ThreadPoolExecutor
 
 grafo = grafo_simples
+start, end = 'A', 'F'
+
 # grafo = grafo_chain
+# start, end = '1', '1000'
+
 
 def sequencial(reps, grafo, start, end):
     t0 = time.perf_counter()
@@ -15,11 +19,11 @@ def sequencial(reps, grafo, start, end):
         bfs(grafo, start, end)
     return time.perf_counter() - t0
 
-def paralelo(reps, grafo, start, end):
+def paralelo(reps, grafo, start, end, num_parts=4):
     t0 = time.perf_counter()
     with ThreadPoolExecutor() as executor:
         futures = [
-            executor.submit(search_path, grafo, start, end)
+            executor.submit(search_path, grafo, start, end, num_parts)
             for _ in range(reps)
         ]
 
@@ -28,8 +32,6 @@ def paralelo(reps, grafo, start, end):
         return time.perf_counter() - t0
     
 if __name__ == "__main__":
-    start, end = 'A', 'F'
-    # start, end = '1', '1000'
 
     print("Corretude: ", bfs(grafo, start, end))
 
